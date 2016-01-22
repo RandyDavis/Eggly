@@ -1,0 +1,81 @@
+<!doctype html>
+<html ng-app="Eggly">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Eggly</title>
+
+    <link rel="stylesheet" href="assets/css/normalize.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="assets/css/eggly.css">
+    <link rel="stylesheet" href="assets/css/animations.css">
+</head>
+<body ng-controller="MainCtrl as vm">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <a href="#" ng-click="vm.setCurrentCategory(null)"><img class="logo" src="assets/img/eggly-logo.png"></a>
+            <ul class="nav nav-sidebar">
+                <li ng-repeat="category in vm.categories" ng-class="{'active':vm.isCurrentCategory(category)}">
+                    <a href="#" ng-click="vm.setCurrentCategory(category)">{{category.name}}</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div ng-class="{'active':vm.isSelectedBookmark(bookmark.id)}" ng-repeat="bookmark in vm.bookmarks | filter:{category:vm.currentCategory.name}">
+                <button type="button" class="close" ng-click="vm.deleteBookmark(bookmark)">&times;</button>
+                <button type="button" ng-click="vm.setEditedBookmark(bookmark);vm.startEditing()" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span>
+                </button>
+                <a href="{{bookmark.url}}" target="_blank">{{bookmark.title}}</a>
+            </div>
+            <hr/>
+            <!-- CREATING -->
+            <div ng-if="vm.shouldShowCreating()">
+                <button type="button" class="btn btn-link" ng-click="vm.startCreating()">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Create Bookmark
+                </button>
+                <form class="create-form" ng-show="vm.isCreating" role="form" ng-submit="vm.createBookmark(vm.newBookmark)" novalidate>
+                    <div class="form-group">
+                        <label for="newBookmarkTitle">Bookmark Title</label>
+                        <input type="text" class="form-control" id="newBookmarkTitle" ng-model="vm.newBookmark.title" placeholder="Enter Title">
+                    </div>
+                    <div class="form-group">
+                        <label for="newBookmarkURL">Bookmark URL</label>
+                        <input type="text" class="form-control" id="newBookmarkURL" ng-model="vm.newBookmark.url" placeholder="Enter URL">
+                    </div>
+                    <button type="submit" class="btn btn-info btn-lg">Create</button>
+                    <button type="button" class="btn btn-default btn-lg pull-right" ng-click="vm.cancelCreating()">Cancel</button>
+                </form>
+            </div>
+            <!-- EDITING -->
+            <div ng-show="vm.shouldShowEditing()">
+                <h4>Editing {{vm.editedBookmark.title}}</h4>
+
+                <form class="edit-form" ng-show="vm.isEditing" role="form" ng-submit="vm.updateBookmark(vm.editedBookmark)" novalidate>
+                    <div class="form-group">
+                        <label for="editedBookmarkTitle">Bookmark Title</label>
+                        <input type="text" class="form-control" id="editedBookmarkTitle" ng-model="vm.editedBookmark.title" placeholder="Update Title">
+                    </div>
+                    <div class="form-group">
+                        <label for="editedBookmarkURL">Bookmark URL</label>
+                        <input type="text" class="form-control" id="editedBookmarkURL" ng-model="vm.editedBookmark.url" placeholder="Update URL">
+                    </div>
+                    <button type="submit" class="btn btn-info btn-lg">Save</button>
+                    <button type="button" class="btn btn-default btn-lg pull-right" ng-click="vm.cancelEditing()">Cancel</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
+<script src="app/eggly-app.js"></script>
+</body>
+</html>
